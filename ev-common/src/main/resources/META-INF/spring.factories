@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ com.eduverse.common.autoconfigure.mq.MqConfig,\
+ com.eduverse.common.autoconfigure.mvc.JsonConfig,\
+ com.eduverse.common.autoconfigure.mvc.MvcConfig,\
+ com.eduverse.common.autoconfigure.mvc.ParamCheckerConfig,\
+ com.eduverse.common.autoconfigure.mybatis.MybatisConfig,\
+ com.eduverse.common.autoconfigure.redisson.RedissonConfig,\
+ com.eduverse.common.autoconfigure.swagger.Knife4jConfiguration, \
+ com.eduverse.common.autoconfigure.xxljob.XxlJobConfig

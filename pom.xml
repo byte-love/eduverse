@@ -4,26 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.tianji</groupId>
-    <artifactId>tjxt</artifactId>
+    <groupId>com.eduverse</groupId>
+    <artifactId>eduverse</artifactId>
     <version>1.0.0</version>
     <modules>
-        <module>tj-common</module>
-        <module>tj-auth</module>
-        <module>tj-api</module>
-        <module>tj-gateway</module>
-        <module>tj-user</module>
-        <module>tj-message</module>
-        <module>tj-media</module>
-        <module>tj-course</module>
-        <module>tj-search</module>
-        <module>tj-learning</module>
-        <module>tj-pay</module>
-        <module>tj-trade</module>
-        <module>tj-exam</module>
-        <module>tj-promotion</module>
-        <module>tj-data</module>
-        <module>tj-remark</module>
+        <module>ev-common</module>
+        <module>ev-auth</module>
+        <module>ev-api</module>
+        <module>ev-gateway</module>
+        <module>ev-user</module>
+        <module>ev-message</module>
+        <module>ev-media</module>
+        <module>ev-course</module>
+        <module>ev-search</module>
+        <module>ev-learning</module>
+        <module>ev-pay</module>
+        <module>ev-trade</module>
+        <module>ev-exam</module>
+        <module>ev-promotion</module>
+        <module>ev-data</module>
+        <module>ev-remark</module>
+        <module>ev-aigc</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -39,7 +40,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <tjxt.version>1.0</tjxt.version>
+        <eduverse.version>1.0</eduverse.version>
         <org.projectlombok.version>1.18.36</org.projectlombok.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
