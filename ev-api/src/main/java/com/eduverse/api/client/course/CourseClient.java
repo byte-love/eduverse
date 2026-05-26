@@ -79,4 +79,11 @@ public interface CourseClient {
     @GetMapping("/courses/baseInfo/{id}")
     CourseBaseInfoDTO baseInfo(@PathVariable("id") Long id,
                                @RequestParam(value = "see", required = false, defaultValue = "1") Boolean see);
+
+    /**
+     * 获取所有已上架和已完结课程的基础信息，用于向量库同步
+     * @return 课程基础信息列表
+     */
+    @GetMapping("/courses/published/baseInfos")
+    List<CourseBaseInfoDTO> getPublishedCourseBaseInfos();
 }

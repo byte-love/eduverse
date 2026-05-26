@@ -51,7 +51,7 @@ public class AccountAuthFilter implements GlobalFilter, Ordered {
 
         // 4.如果用户是登录状态，尝试更新请求头，传递用户信息
         if (r.success()) {
-            exchange.mutate()
+            exchange = exchange.mutate()
                     .request(builder -> builder
                             .header(USER_HEADER, r.getData().getUserId().toString())
                             .header(TOKEN_HEADER, token)

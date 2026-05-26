@@ -9,7 +9,7 @@ spring:
     name: auth-service
 encrypt:
   key-store:
-    alias: eduverse  #别名
+    alias: tjxt  #别名
     location: classpath:eduverse.jks  #KeyStore 证书库名称
     password: tj123321   #证书库密码
     secret: tj123321   #秘钥

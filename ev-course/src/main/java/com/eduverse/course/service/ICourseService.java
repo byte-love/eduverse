@@ -121,4 +121,10 @@ public interface ICourseService extends IService<Course> {
     List<Long> queryCourseIdByName(String name);
 
     CourseAndSectionVO queryCourseAndCatalogById(Long courseId);
+
+    /**
+     * 查询所有已上架和已完结课程的基础信息，用于向量库同步
+     * @return 课程基础信息列表
+     */
+    List<CourseBaseInfoDTO> getPublishedCourseBaseInfos();
 }

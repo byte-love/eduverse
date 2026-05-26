@@ -2,6 +2,7 @@ package com.eduverse.course.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.eduverse.api.dto.IdAndNumDTO;
+import com.eduverse.api.dto.course.CourseBaseInfoDTO;
 import com.eduverse.course.domain.po.Category3PO;
 import com.eduverse.course.domain.po.Course;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,13 @@ public interface CourseMapper extends BaseMapper<Course> {
     @Select("select distinct first_cate_id as 'firstCateId',second_cate_id as 'secondCateId'," +
             "third_cate_id as 'thirdCateId' from course where status=2")
     List<Category3PO> queryCategoryIdWithCourse();
+
+    @Select("SELECT c.id, c.name, c.price, c.valid_duration AS validDuration, " +
+            "c.cover_url AS coverUrl, c.status, c.free, c.section_num AS cataTotalNum, " +
+            "c.first_cate_id AS firstCateId, c.second_cate_id AS secondCateId, c.third_cate_id AS thirdCateId, " +
+            "cc.course_introduce AS introduce, cc.use_people AS usePeople, cc.course_detail AS detail " +
+            "FROM course c " +
+            "LEFT JOIN course_content cc ON c.id = cc.id " +
+            "WHERE c.status IN (2, 4) AND c.deleted = 0")
+    List<CourseBaseInfoDTO> selectPublishedCourseBaseInfos();
 }

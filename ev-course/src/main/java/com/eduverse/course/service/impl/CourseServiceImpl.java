@@ -516,6 +516,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         });
     }
 
+    @Override
+    public List<CourseBaseInfoDTO> getPublishedCourseBaseInfos() {
+        return baseMapper.selectPublishedCourseBaseInfos();
+    }
+
     /**
      * 异步发送课程完结mq
      *

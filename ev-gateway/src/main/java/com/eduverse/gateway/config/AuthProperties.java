@@ -12,7 +12,7 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "tj.auth")
 public class AuthProperties implements InitializingBean {
 
-    private Set<String> excludePath;
+    private Set<String> excludePath = new java.util.HashSet<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {

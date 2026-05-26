@@ -1,6 +1,7 @@
 package com.eduverse.course.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.eduverse.api.dto.course.CourseBaseInfoDTO;
 import com.eduverse.api.dto.course.CourseSimpleInfoDTO;
 import com.eduverse.common.domain.dto.PageDTO;
 import com.eduverse.common.validate.annotations.ParamChecker;
@@ -69,6 +70,12 @@ public class CourseController {
     @ParamChecker
     public CourseSaveVO save(@RequestBody @Validated(CourseSaveBaseGroup.class) CourseBaseInfoSaveDTO courseBaseInfoSaveDTO) {
         return courseDraftService.save(courseBaseInfoSaveDTO);
+    }
+
+    @GetMapping("published/baseInfos")
+    @Operation(summary = "获取所有已上架和已完结课程的基础信息，用于向量库同步")
+    public List<CourseBaseInfoDTO> getPublishedCourseBaseInfos() {
+        return courseService.getPublishedCourseBaseInfos();
     }
 
     @GetMapping("catas/{id}")

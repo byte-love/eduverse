@@ -14,6 +14,8 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -53,6 +55,42 @@ public class CourseTools {
                           return courseInfo;
                       })
                   .orElse(null);
+    }
+
+    @Tool(description = Constant.Tools.QUERY_COURSES_BY_IDS)
+    public List<CourseInfo> queryCoursesByIds(@ToolParam(description = Constant.ToolParams.COURSE_IDS) List<Long> courseIds,
+                                              ToolContext toolContext) {
+        if (courseIds == null || courseIds.isEmpty()) {
+            return List.of();
+        }
+        String requestId = Convert.toStr(toolContext.getContext().get(Constant.REQUEST_ID));
+        return courseIds.stream()
+                .map(id -> CourseInfo.of(courseClient.baseInfo(id, true)))
+                .filter(Objects::nonNull)
+                .peek(courseInfo -> {
+                    String field = StrUtil.format(FIELD_FORMAT,
+                            StrUtil.lowerFirst(CourseInfo.class.getSimpleName()),
+                            courseInfo.getId());
+                    ToolResultHolder.put(requestId, field, courseInfo);
+                })
+                .toList();
+    }
+
+    @Tool(description = Constant.Tools.GET_AVAILABLE_COURSES)
+    public List<CourseInfo> getAvailableCourses(ToolContext toolContext) {
+        var courses = courseClient.getPublishedCourseBaseInfos();
+        if (courses == null || courses.isEmpty()) {
+            return List.of();
+        }
+        return courses.stream()
+                .map(dto -> CourseInfo.builder()
+                        .id(dto.getId())
+                        .name(dto.getName())
+                        .price(dto.getPrice() != null ? dto.getPrice() / 100.0 : 0)
+                        .validDuration(dto.getValidDuration())
+                        .usePeople(dto.getUsePeople())
+                        .build())
+                .toList();
     }
 
 }
