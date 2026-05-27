@@ -570,6 +570,12 @@ tj_data    tj_aigc
 
 ```
 eduverse
+├── frontend/               # 前端项目
+│   ├── tj-admin/           # 管理端 (Vite + Vue 3)
+│   └── tj-portal/          # 学员端 (Vite + Vue 3)
+├── docker/                 # Docker 部署配置
+│   ├── docker-compose.yml  # 基础设施编排 (MySQL/Redis/ES/Nacos/MQ 等)
+│   └── nginx/              # Nginx 配置 (域名反向代理)
 ├── ev-api                  # Feign 接口 & 共享 DTO
 ├── ev-common               # 通用工具 & 自动配置
 ├── ev-gateway              # API 网关
@@ -589,8 +595,8 @@ eduverse
 ├── ev-aigc                 # AI 智能体服务
 ├── job                     # XXL-Job 任务文件
 ├── logs                    # 日志目录
-├── Dockerfile              # Docker 镜像构建文件
-├── startup.sh              # 部署脚本
+├── Dockerfile              # 后端 Docker 镜像构建文件
+├── startup.sh              # 后端部署脚本
 ├── pom.xml                 # Maven 父 POM
 └── README.md
 ```

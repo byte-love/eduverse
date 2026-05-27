@@ -1,0 +1,144 @@
+version: "3.2"
+
+services:
+  mysql:
+    image: registry.cn-beijing.aliyuncs.com/itcast/mysql:8.0.29
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: itcast321bca
+    volumes:
+      - "./mysql/conf:/etc/mysql/conf.d"
+      - "./mysql/data:/var/lib/mysql"
+      - "./mysql/init:/docker-entrypoint-initdb.d"
+    restart: always
+    networks:
+      - new
+  nacos:
+    image: registry.cn-beijing.aliyuncs.com/itcast/nacos-server:v2.4.2
+    container_name: nacos
+    environment:
+      - MODE=standalone
+      - JVM_XMS=512m
+      - JVM_XMX=512m
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=itcast321bca
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_TOKEN=OGE2MjdhNDU3OGFjZTM4NDAxN2M5OTdmMTJkNjhiMjM=
+      - NACOS_AUTH_IDENTITY_KEY=itcast
+      - NACOS_AUTH_IDENTITY_VALUE=itcast
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - new
+  xxl-job:
+    image: registry.cn-beijing.aliyuncs.com/itcast/xxl-job-admin:2.3.0
+    container_name: xxljob
+    ports:
+      - "8880:8880"
+    volumes:
+      - "./xxl-job/logs:/data/applogs"
+      - "./xxl-job/application.properties:/config/application.properties"
+    networks:
+      - new
+    restart: always
+    depends_on:
+      - mysql
+  seata:
+    image: registry.cn-beijing.aliyuncs.com/itcast/seata-server:2.1.0-mysql
+    container_name: seata
+    ports:
+      - "8099:8099"
+      - "7099:7099"
+    environment:
+      SEATA_IP: 192.168.150.101
+    volumes:
+      - "./seata:/seata-server/resources"
+    networks:
+      - new
+    restart: always
+    depends_on:
+      - mysql
+      - nacos
+  gogs:
+    image: registry.cn-beijing.aliyuncs.com/itcast/gogs:0.12
+    container_name: gogs
+    ports:
+      - "10022:22"
+      - "10880:3000"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - "./gogs:/data"
+    networks:
+      - new
+    restart: always
+    depends_on:
+      - mysql
+  jenkins:
+    image: jenkins/jenkins:2.361.1-lts-jdk11
+    container_name: jenkins
+    ports:
+      - "18080:8080"
+      - "50000:50000"
+    environment:
+      - "JAVA_OPTS=-server -Xms1024m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+    volumes:
+      - "./jenkins:/var/jenkins_home"
+      - "/usr/bin/docker:/usr/bin/docker"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+   # restart: always
+    networks:
+      - new
+  mq:
+    image: registry.cn-hangzhou.aliyuncs.com/itheima/rabbitmq:3.9.17-management-delayed
+    container_name: mq
+    hostname: mq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=tjxt
+      - RABBITMQ_DEFAULT_PASS=123321
+    restart: always
+    networks:
+      - new
+  es:
+    image: registry.cn-beijing.aliyuncs.com/itcast/elasticsearch:7.12.1
+    container_name: es
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    volumes:
+      - "./es/data:/usr/share/elasticsearch/data"
+      - "./es/plugins:/usr/share/elasticsearch/plugins"
+    restart: always
+    networks:
+      - new
+  redis:
+    image: registry.cn-beijing.aliyuncs.com/itcast/redis:7.0.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./redis/conf:/usr/local/etc/redis"
+      - "./redis/data:/tmp"
+    networks:
+      - new
+    restart: always
+    entrypoint: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+networks:
+  new:
+    name: tjxt
