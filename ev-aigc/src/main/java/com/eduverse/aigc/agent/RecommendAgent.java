@@ -8,6 +8,7 @@ import com.eduverse.aigc.enums.AgentTypeEnum;
 import com.eduverse.aigc.tools.CourseTools;
 import com.eduverse.aigc.tools.result.CourseInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.vectorstore.SearchRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RecommendAgent extends AbstractAgent {
@@ -76,15 +78,18 @@ public class RecommendAgent extends AbstractAgent {
 
     @Override
     protected void afterStream(String requestId, String sessionId) {
-        var map = ToolResultHolder.get(requestId);
-        if (CollUtil.isNotEmpty(map)) {
-            return;
-        }
-        // LLM未调用queryCoursesByIds，程序化兜底：查询全部已发布课程
-        var courses = courseTools.getAvailableCourses();
-        if (courses != null && !courses.isEmpty()) {
-            var ids = courses.stream().map(CourseInfo::getId).toList();
-            courseTools.queryCoursesByIdsInternal(ids, requestId);
+        try {
+            var map = ToolResultHolder.get(requestId);
+            if (CollUtil.isNotEmpty(map)) {
+                return;
+            }
+            var courses = courseTools.getAvailableCourses();
+            if (courses != null && !courses.isEmpty()) {
+                var ids = courses.stream().map(CourseInfo::getId).toList();
+                courseTools.queryCoursesByIdsInternal(ids, requestId);
+            }
+        } catch (Exception e) {
+            log.warn("afterStream fallback failed, requestId={}", requestId, e);
         }
     }
 }

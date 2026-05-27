@@ -119,11 +119,15 @@ public class CourseDraftServiceImpl extends ServiceImpl<CourseDraftMapper, Cours
         } else {
             //1.2.未上架课程校验
             course = courseMapper.selectById(courseBaseInfoSaveDTO.getId());
-            if (course == null) {
+            boolean isDownShelf = course != null
+                    && CourseStatus.DOWN_SHELF.getStatus().equals(course.getStatus());
+            if (course == null || isDownShelf) {
                 //1.2.1.未上架课程校验请求参数
                 ViolationUtils.process(validatorFactory.getValidator().validate(courseBaseInfoSaveDTO));
                 //1.2.2.同名课程判空
-                checkSameCourse(courseBaseInfoSaveDTO.getId(), courseBaseInfoSaveDTO.getName());
+                if (course == null) {
+                    checkSameCourse(courseBaseInfoSaveDTO.getId(), courseBaseInfoSaveDTO.getName());
+                }
                 //1.2.3.校验课程分类
                 categoryIdList = categoryService.checkCategory(courseBaseInfoSaveDTO.getThirdCateId());
             }
@@ -139,8 +143,10 @@ public class CourseDraftServiceImpl extends ServiceImpl<CourseDraftMapper, Cours
         //2.2.课程封面和课程下架时间
         courseDraft.setCoverUrl(courseBaseInfoSaveDTO.getCoverUrl());
         courseDraft.setPurchaseEndTime(courseBaseInfoSaveDTO.getPurchaseEndTime());
-        //2.3.未上架数据封装，已上架课程不能修改字段
-        if (course == null) {
+        //2.3.未上架或已下架课程可修改核心字段
+        boolean canModifyCore = (course == null
+                || CourseStatus.DOWN_SHELF.getStatus().equals(course.getStatus()));
+        if (canModifyCore) {
             //2.3.1.课程价格
             courseDraft.setPrice(NumberUtils.null2Zero(courseBaseInfoSaveDTO.getPrice()));
             //2.3.2.课程有效期

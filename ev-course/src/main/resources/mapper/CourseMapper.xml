@@ -41,6 +41,10 @@
     <update id="updateVariableById" parameterType="java.util.Map">
         update course set status=#{po.status},
                           cover_url=#{po.coverUrl},
+                          name=#{po.name},
+                          price=#{po.price},
+                          free=#{po.free},
+                          valid_duration=#{po.validDuration},
                           purchase_start_time=#{po.purchaseStartTime},
                           purchase_end_time=#{po.purchaseEndTime},
                           media_duration=#{po.mediaDuration},
