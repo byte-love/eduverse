@@ -625,14 +625,9 @@ eduverse
 
 感谢以下开发者对本项目的贡献：
 
-| 贡献者 | 邮箱 | 提交数 | 角色 |
-|--------|------|--------|------|
-| zhangzhijun | zhangzhijun@itcast.cn | 132 | — |
-| 虎哥 | huyi0612@163.com | 121 | — |
-| byteLove | 18379666264@163.com | 4 | — |
-| tjxt | tjxt@itcast.cn | 1 | — |
-
-> 如需补充 GitHub 主页链接、个人角色或联系方式，请提交 PR 更新此表格。
+| 贡献者 | 邮箱 | GitHub |
+|--------|------|--------|
+| byteLove | 18379666264@163.com | [byte-love](https://github.com/byte-love) |
 
 ---
 
