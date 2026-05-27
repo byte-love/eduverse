@@ -1,6 +1,6 @@
 #! /bin/sh
 cd /usr/local/src/script || exit 1
-BASE_PATH='/usr/local/src/tianji/tjxt'
+BASE_PATH='/usr/local/src/tianji/eduverse'
 PROJECT_NAME=""
 PROJECT_PATH=''
 CONTAINER_NAME=""

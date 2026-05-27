@@ -100,13 +100,13 @@
       "name": "tj.mq.vhost",
       "type": "java.lang.String",
       "description": "rabbitmq的virtual-host地址",
-      "defaultValue": "/tjxt"
+      "defaultValue": "/eduverse"
     },
     {
       "name": "tj.mq.username",
       "type": "java.lang.String",
       "description": "rabbitmq的用户名",
-      "defaultValue": "tjxt"
+      "defaultValue": "eduverse"
     },
     {
       "name": "tj.mq.password",
