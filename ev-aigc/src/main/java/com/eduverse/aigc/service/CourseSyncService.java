@@ -48,12 +48,6 @@ public class CourseSyncService {
         sb.append("[课程ID: ").append(course.getId()).append("] ");
         sb.append("课程名称: ").append(course.getName());
 
-        if (course.getPrice() != null) {
-            sb.append(", 价格: ").append(course.getPrice() / 100.0).append("元");
-        }
-        if (Boolean.TRUE.equals(course.getFree())) {
-            sb.append(" (免费课程)");
-        }
         if (course.getValidDuration() != null) {
             sb.append(", 有效期: ").append(course.getValidDuration()).append("个月");
         }

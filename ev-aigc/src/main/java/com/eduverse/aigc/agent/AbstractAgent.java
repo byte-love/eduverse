@@ -114,6 +114,8 @@ public abstract class AbstractAgent implements Agent {
                     this.chatSessionService.update(sessionId, content, userId);
                 })
                 .concatWith(Flux.defer(() -> {
+                    // 给子类一个后处理机会（如强制调用工具方法填充ToolResultHolder）
+                    this.afterStream(requestId, sessionId);
                     // 通过请求id获取到参数列表，如果不为空，就将其追加到返回结果中
                     var map = ToolResultHolder.get(requestId);
                     if (CollUtil.isNotEmpty(map)) {
@@ -174,6 +176,12 @@ public abstract class AbstractAgent implements Agent {
     public Map<String, Object> advisorParams(String sessionId, String requestId) {
         var conversationId = ChatService.getConversationId(sessionId);
         return Map.of(ChatMemory.CONVERSATION_ID, conversationId);
+    }
+
+    /**
+     * 流式输出完成后的钩子，子类可在此填充ToolResultHolder。
+     */
+    protected void afterStream(String requestId, String sessionId) {
     }
 
     /**

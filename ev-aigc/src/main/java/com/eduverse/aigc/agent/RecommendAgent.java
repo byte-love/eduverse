@@ -1,9 +1,12 @@
 package com.eduverse.aigc.agent;
 
+import cn.hutool.core.collection.CollUtil;
 import com.eduverse.aigc.config.SystemPromptConfig;
+import com.eduverse.aigc.config.ToolResultHolder;
 import com.eduverse.aigc.constants.Constant;
 import com.eduverse.aigc.enums.AgentTypeEnum;
 import com.eduverse.aigc.tools.CourseTools;
+import com.eduverse.aigc.tools.result.CourseInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
@@ -67,8 +70,21 @@ public class RecommendAgent extends AbstractAgent {
     @Override
     public Map<String, Object> toolContext(String sessionId, String requestId) {
         return Map.of(
-                // 设置请求id参数
                 Constant.REQUEST_ID, requestId
         );
+    }
+
+    @Override
+    protected void afterStream(String requestId, String sessionId) {
+        var map = ToolResultHolder.get(requestId);
+        if (CollUtil.isNotEmpty(map)) {
+            return;
+        }
+        // LLM未调用queryCoursesByIds，程序化兜底：查询全部已发布课程
+        var courses = courseTools.getAvailableCourses();
+        if (courses != null && !courses.isEmpty()) {
+            var ids = courses.stream().map(CourseInfo::getId).toList();
+            courseTools.queryCoursesByIdsInternal(ids, requestId);
+        }
     }
 }

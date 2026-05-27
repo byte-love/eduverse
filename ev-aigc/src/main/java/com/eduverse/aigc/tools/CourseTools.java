@@ -27,57 +27,49 @@ public class CourseTools {
     private static final String FIELD_FORMAT = "{}_{}";
 
 
-    // 方法名不能乱写，要跟提示词里面给大模型的方法名一致
     @Tool(description = Constant.Tools.QUERY_COURSE_BY_ID)
     public CourseInfo queryCourseById(@ToolParam(description = Constant.ToolParams.COURSE_ID) Long courseId,
                                       ToolContext toolContext) {
-//        if (courseId != null) {
-//            CourseBaseInfoDTO courseBaseInfoDTO = courseClient.baseInfo(courseId, true);
-//            return CourseInfo.of(courseBaseInfoDTO);
-//        } else {
-//            return null;
-//        }
-          return Optional
-                  .ofNullable(courseId)
-                      // 获取课程信息
-                      .map(id -> CourseInfo.of(courseClient.baseInfo(id, true)))
-                      // 存储课程卡片到容器中
-                      .map(courseInfo -> {
-                          // 大key：requestId
-                          String requestId = Convert.toStr(toolContext.getContext().get(Constant.REQUEST_ID));
-                          // 小key：courseInfo_课程Id
-                          String field = StrUtil.format(FIELD_FORMAT,
-                                  StrUtil.lowerFirst(CourseInfo.class.getSimpleName()),
-                                  courseId);
-                          // 准备value：courseInfo对象
-                          // 存入容器
-                          ToolResultHolder.put(requestId, field, courseInfo);
-                          return courseInfo;
-                      })
-                  .orElse(null);
+        return Optional
+                .ofNullable(courseId)
+                .map(id -> queryCourseInternal(id, Convert.toStr(toolContext.getContext().get(Constant.REQUEST_ID))))
+                .orElse(null);
     }
 
     @Tool(description = Constant.Tools.QUERY_COURSES_BY_IDS)
     public List<CourseInfo> queryCoursesByIds(@ToolParam(description = Constant.ToolParams.COURSE_IDS) List<Long> courseIds,
                                               ToolContext toolContext) {
+        return queryCoursesByIdsInternal(courseIds, Convert.toStr(toolContext.getContext().get(Constant.REQUEST_ID)));
+    }
+
+    /**
+     * 批量查询课程详情并存入ToolResultHolder，可被工具方法和程序化调用。
+     */
+    public List<CourseInfo> queryCoursesByIdsInternal(List<Long> courseIds, String requestId) {
         if (courseIds == null || courseIds.isEmpty()) {
             return List.of();
         }
-        String requestId = Convert.toStr(toolContext.getContext().get(Constant.REQUEST_ID));
         return courseIds.stream()
-                .map(id -> CourseInfo.of(courseClient.baseInfo(id, true)))
+                .map(id -> queryCourseInternal(id, requestId))
                 .filter(Objects::nonNull)
-                .peek(courseInfo -> {
-                    String field = StrUtil.format(FIELD_FORMAT,
-                            StrUtil.lowerFirst(CourseInfo.class.getSimpleName()),
-                            courseInfo.getId());
-                    ToolResultHolder.put(requestId, field, courseInfo);
-                })
                 .toList();
     }
 
-    @Tool(description = Constant.Tools.GET_AVAILABLE_COURSES)
-    public List<CourseInfo> getAvailableCourses(ToolContext toolContext) {
+    private CourseInfo queryCourseInternal(Long courseId, String requestId) {
+        CourseInfo courseInfo = CourseInfo.of(courseClient.baseInfo(courseId, true));
+        if (courseInfo != null) {
+            String field = StrUtil.format(FIELD_FORMAT,
+                    StrUtil.lowerFirst(CourseInfo.class.getSimpleName()),
+                    courseInfo.getId());
+            ToolResultHolder.put(requestId, field, courseInfo);
+        }
+        return courseInfo;
+    }
+
+    /**
+     * 获取所有已发布课程的基础信息（不含价格），供程序内部使用，不作为LLM工具。
+     */
+    public List<CourseInfo> getAvailableCourses() {
         var courses = courseClient.getPublishedCourseBaseInfos();
         if (courses == null || courses.isEmpty()) {
             return List.of();
@@ -86,7 +78,6 @@ public class CourseTools {
                 .map(dto -> CourseInfo.builder()
                         .id(dto.getId())
                         .name(dto.getName())
-                        .price(dto.getPrice() != null ? dto.getPrice() / 100.0 : 0)
                         .validDuration(dto.getValidDuration())
                         .usePeople(dto.getUsePeople())
                         .build())
