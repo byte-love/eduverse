@@ -571,8 +571,8 @@ tj_data    tj_aigc
 ```
 eduverse
 ├── frontend/               # 前端项目
-│   ├── tj-admin/           # 管理端 (Vite + Vue 3)
-│   └── tj-portal/          # 学员端 (Vite + Vue 3)
+│   ├── eduverse-admin/     # 管理端 (Vite + Vue 3)
+│   └── eduverse-portal/    # 学员端 (Vite + Vue 3)
 ├── docker/                 # Docker 部署配置
 │   ├── docker-compose.yml  # 基础设施编排 (MySQL/Redis/ES/Nacos/MQ 等)
 │   └── nginx/              # Nginx 配置 (域名反向代理)

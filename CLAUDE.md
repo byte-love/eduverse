@@ -10,7 +10,7 @@
 - **数据库**: MySQL（MyBatis Plus）
 - **缓存**: Redis
 - **向量库**: Spring AI VectorStore（用于 RAG 检索增强）
-- **前端**: Vue 3（编译后产物在 `frontend/tj-portal/assets/`）
+- **前端**: Vue 3（编译后产物在 `frontend/eduverse-portal/assets/` 和 `frontend/eduverse-admin/assets/`）
 - **网关**: Spring Cloud Gateway
 
 ## 模块结构
